@@ -63,7 +63,7 @@
                     <p class="text-gray-700"><strong>Bouwdatum:</strong> {{ $voertuig->bouwdatum }}</p>
                     <p class="text-gray-700"><strong>Prijs Ingekocht:</strong> {{ $voertuig->prijs_ingekocht }}</p>
                     <p class="text-gray-700"><strong>Prijs Te Koop:</strong> {{ $voertuig->prijs_te_koop }}</p>
-                    <p class="text-gray-700"><strong>Categorie:</strong> {{ $voertuig->categorie }}</p>
+                    <p class="text-gray-700"><strong>Categorie:</strong> {{ $voertuig->categorie->name }}</p>
                     @if ($voertuig->foto_path)
                         <img src="{{ asset('storage/' . $voertuig->foto_path) }}" alt="Foto" class="w-full h-48 object-cover mt-4 rounded-lg">
                     @endif

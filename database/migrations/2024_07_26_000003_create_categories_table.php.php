@@ -10,23 +10,13 @@ class CreateCategoriesTable extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->timestamps();
-        });
-
-        Schema::table('voertuigen', function (Blueprint $table) {
-            $table->foreignId('category_id')->constrained('categories');
         });
     }
 
     public function down()
     {
-        Schema::table('voertuigen', function (Blueprint $table) {
-            $table->dropForeign(['category_id']);
-            $table->dropColumn('category_id');
-        });
-
         Schema::dropIfExists('categories');
     }
 }
-

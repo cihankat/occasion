@@ -55,8 +55,12 @@
                 <input type="number" step="0.01" name="prijs_te_koop" id="prijs_te_koop" value="{{ $voertuig->prijs_te_koop }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
             </div>
             <div class="mb-4">
-                <label for="categorie" class="block text-sm font-medium text-gray-700">Categorie:</label>
-                <input type="text" name="categorie" id="categorie" value="{{ $voertuig->categorie }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                <label for="categorie_id" class="block text-sm font-medium text-gray-700">Categorie:</label>
+                <select name="categorie_id" id="categorie_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    @foreach ($categories as $category)
+                        <option value="{{ $category->id }}" {{ $voertuig->categorie_id == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                    @endforeach
+                </select>
             </div>
             <div class="mb-4">
                 <label for="foto" class="block text-sm font-medium text-gray-700">Foto:</label>

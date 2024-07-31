@@ -9,7 +9,7 @@ class Voertuig extends Model
 {
     use HasFactory;
 
-    protected $table = 'voertuigen'; // explicitly specify the table name
+    protected $table = 'voertuigen'; // explicitly set the table name
 
     protected $fillable = [
         'kenteken',
@@ -18,7 +18,12 @@ class Voertuig extends Model
         'bouwdatum',
         'prijs_ingekocht',
         'prijs_te_koop',
-        'categorie',
-        'foto_path',
+        'categorie_id',
+        'foto_path'
     ];
+
+    public function categorie()
+    {
+        return $this->belongsTo(Categorie::class);
+    }
 }

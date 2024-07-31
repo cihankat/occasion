@@ -1,16 +1,33 @@
-<!-- resources/views/voertuigen/create.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voertuig Toevoegen</title>
+    <title>Create Voertuig</title>
     @vite('resources/css/app.css')
 </head>
 <body class="bg-gray-100">
-    <div class="max-w-2xl mx-auto py-10">
-        <h1 class="text-2xl font-bold mb-6">Voertuig Toevoegen</h1>
-        <form action="{{ route('voertuigen.store') }}" method="POST" enctype="multipart/form-data">
+    <nav class="bg-blue-500 p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="{{ route('dashboard') }}" class="text-white font-bold">Dashboard</a>
+            <a href="{{ route('voertuigen.create') }}" class="text-white">Add Voertuig</a>
+        </div>
+    </nav>
+
+    <div class="container mx-auto py-10">
+        <h1 class="text-3xl font-bold mb-8 text-center">Create Voertuig</h1>
+        @if (session('success'))
+            <div class="bg-green-500 text-white p-4 rounded mb-6 shadow-md">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if (session('error'))
+            <div class="bg-red-500 text-white p-4 rounded mb-6 shadow-md">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        <form action="{{ route('voertuigen.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-lg">
             @csrf
             <div class="mb-4">
                 <label for="kenteken" class="block text-sm font-medium text-gray-700">Kenteken:</label>
@@ -37,8 +54,12 @@
                 <input type="number" step="0.01" name="prijs_te_koop" id="prijs_te_koop" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
             </div>
             <div class="mb-4">
-                <label for="categorie" class="block text-sm font-medium text-gray-700">Categorie:</label>
-                <input type="text" name="categorie" id="categorie" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                <label for="categorie_id" class="block text-sm font-medium text-gray-700">Categorie:</label>
+                <select name="categorie_id" id="categorie_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+                    @foreach ($categories as $category)
+                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                    @endforeach
+                </select>
             </div>
             <div class="mb-4">
                 <label for="foto" class="block text-sm font-medium text-gray-700">Foto:</label>

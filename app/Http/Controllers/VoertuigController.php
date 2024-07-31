@@ -4,26 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Voertuig;
+use App\Models\Categorie;
 use Illuminate\Support\Facades\Log;
 
 class VoertuigController extends Controller
 {
-    public function destroy($id)
-    {
-        try {
-            $voertuig = Voertuig::findOrFail($id);
-            $voertuig->delete();
-
-            return redirect()->route('dashboard')->with('success', 'Voertuig deleted successfully!');
-        } catch (\Exception $e) {
-            Log::error('Error deleting voertuig: ' . $e->getMessage());
-            return redirect()->route('dashboard')->with('error', 'There was an error deleting the voertuig.');
-        }
-    }
-
     public function index()
     {
-        $voertuigen = Voertuig::all();
+        $voertuigen = Voertuig::with('categorie')->get();
         $totalCars = $voertuigen->count();
         $totalCost = $voertuigen->sum('prijs_ingekocht');
         $totalValue = $voertuigen->sum('prijs_te_koop');
@@ -31,10 +19,10 @@ class VoertuigController extends Controller
         return view('dashboard', compact('voertuigen', 'totalCars', 'totalCost', 'totalValue'));
     }
 
-
     public function create()
     {
-        return view('voertuigen.create');
+        $categories = Categorie::all();
+        return view('voertuigen.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -46,19 +34,12 @@ class VoertuigController extends Controller
             'bouwdatum' => 'required|date',
             'prijs_ingekocht' => 'required|numeric',
             'prijs_te_koop' => 'required|numeric',
-            'categorie' => 'required',
+            'categorie_id' => 'required|exists:categories,id',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         try {
-            $voertuig = new Voertuig();
-            $voertuig->kenteken = $request->kenteken;
-            $voertuig->merk = $request->merk;
-            $voertuig->type = $request->type;
-            $voertuig->bouwdatum = $request->bouwdatum;
-            $voertuig->prijs_ingekocht = $request->prijs_ingekocht;
-            $voertuig->prijs_te_koop = $request->prijs_te_koop;
-            $voertuig->categorie = $request->categorie;
+            $voertuig = new Voertuig($request->all());
 
             if ($request->hasFile('foto')) {
                 $file = $request->file('foto');
@@ -78,7 +59,8 @@ class VoertuigController extends Controller
     public function edit($id)
     {
         $voertuig = Voertuig::findOrFail($id);
-        return view('voertuigen.edit', compact('voertuig'));
+        $categories = Categorie::all();
+        return view('voertuigen.edit', compact('voertuig', 'categories'));
     }
 
     public function update(Request $request, $id)
@@ -90,19 +72,13 @@ class VoertuigController extends Controller
             'bouwdatum' => 'required|date',
             'prijs_ingekocht' => 'required|numeric',
             'prijs_te_koop' => 'required|numeric',
-            'categorie' => 'required',
+            'categorie_id' => 'required|exists:categories,id',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         try {
             $voertuig = Voertuig::findOrFail($id);
-            $voertuig->kenteken = $request->kenteken;
-            $voertuig->merk = $request->merk;
-            $voertuig->type = $request->type;
-            $voertuig->bouwdatum = $request->bouwdatum;
-            $voertuig->prijs_ingekocht = $request->prijs_ingekocht;
-            $voertuig->prijs_te_koop = $request->prijs_te_koop;
-            $voertuig->categorie = $request->categorie;
+            $voertuig->fill($request->all());
 
             if ($request->hasFile('foto')) {
                 $file = $request->file('foto');
@@ -116,6 +92,19 @@ class VoertuigController extends Controller
         } catch (\Exception $e) {
             Log::error('Error updating voertuig: ' . $e->getMessage());
             return redirect()->back()->with('error', 'There was an error updating the voertuig.');
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $voertuig = Voertuig::findOrFail($id);
+            $voertuig->delete();
+
+            return redirect()->route('dashboard')->with('success', 'Voertuig deleted successfully!');
+        } catch (\Exception $e) {
+            Log::error('Error deleting voertuig: ' . $e->getMessage());
+            return redirect()->route('dashboard')->with('error', 'There was an error deleting the voertuig.');
         }
     }
 }

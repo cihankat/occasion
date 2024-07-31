@@ -16,7 +16,7 @@ class CreateVoertuigenTable extends Migration
             $table->date('bouwdatum');
             $table->decimal('prijs_ingekocht', 8, 2);
             $table->decimal('prijs_te_koop', 8, 2);
-            $table->string('categorie');
+            $table->foreignId('categorie_id')->constrained('categories');
             $table->string('foto_path')->nullable();
             $table->timestamps();
         });
